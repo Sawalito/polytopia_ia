@@ -2,6 +2,8 @@ import pygame
 
 from polytopia.interfaces import FogState, GameState, Position
 from polytopia.renderers.gui import colors
+from polytopia.renderers.gui.entity_renderer import render_entities
+from polytopia.renderers.gui.hud_renderer import render_hud
 from polytopia.renderers.gui.iso_projection import compute_camera_offset
 from polytopia.renderers.gui.terrain_renderer import render_tile
 
@@ -29,10 +31,32 @@ class PolytopiaRenderer:
         self.font_medium = pygame.font.SysFont("Arial", 20, bold=True)
         self.font_large = pygame.font.SysFont("Arial", 28, bold=True)
 
-    def render(self, state: GameState, viewer_player: int | None = None) -> None:
-        """Renderiza el estado completo en la ventana."""
+    def render(
+        self,
+        state: GameState,
+        viewer_player: int | None = None,
+        last_action_text: str | None = None,
+    ) -> None:
+        """Renderiza terreno, entidades y HUD en orden de capas."""
         self.screen.fill(colors.BACKGROUND)
         self._render_terrain(state, viewer_player)
+        render_entities(
+            self.screen,
+            state,
+            self.camera_offset,
+            self.font_small,
+            viewer_player,
+        )
+        render_hud(
+            self.screen,
+            state,
+            self.window_size,
+            self.font_small,
+            self.font_medium,
+            self.font_large,
+            last_action_text=last_action_text,
+            viewer_player=viewer_player,
+        )
         pygame.display.flip()
 
     def _render_terrain(
@@ -81,7 +105,11 @@ def demo_main() -> None:
     renderer = PolytopiaRenderer(board_size=state.board_size)
     running = True
     while running:
-        renderer.render(state, viewer_player=None)
+        renderer.render(
+            state,
+            viewer_player=None,
+            last_action_text="Estado inicial - cierra con ESC",
+        )
         running = not renderer.handle_quit()
         renderer.clock.tick(30)
     renderer.close()

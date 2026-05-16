@@ -48,3 +48,16 @@ def test_renderer_creates_window():
     )
     renderer.render(state)
     renderer.close()
+
+
+@pytest.mark.skipif(not pygame.display.get_init(), reason="No display")
+def test_renderer_with_entities():
+    """Smoke test: renderer corre completo (terreno + entidades + HUD) sin errores."""
+    from polytopia.engine.state_init import create_initial_state
+    from polytopia.renderers.gui import PolytopiaRenderer
+
+    pygame.init()
+    state = create_initial_state(seed=42)
+    r = PolytopiaRenderer(state.board_size, 800, 600)
+    r.render(state, viewer_player=0, last_action_text="MOVE u=1 -> (2,3)")
+    r.close()
