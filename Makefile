@@ -1,4 +1,4 @@
-.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-paused lint format clean
+.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-paused gui-record gui-replay lint format clean
 
 install:
 	pip install -e ".[dev]"
@@ -29,6 +29,14 @@ gui-live-heuristic:
 
 gui-paused:
 	python -m polytopia.renderers.gui.live_runner --paused
+
+gui-record:
+	mkdir -p replays
+	python -m polytopia.renderers.gui.live_runner --record replays/last_game.json
+
+gui-replay:
+	@if [ -z "$(FILE)" ]; then echo "Usa: make gui-replay FILE=replays/partida.json"; exit 1; fi
+	python -m polytopia.renderers.gui.replay_player $(FILE) --delay 0.5
 
 lint:
 	ruff check src tests

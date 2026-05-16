@@ -9,6 +9,7 @@ from polytopia.engine.rules import apply_action, check_game_over
 from polytopia.engine.state_init import create_initial_state
 from polytopia.interfaces import Action, ActionType, GameState
 from polytopia.renderers.gui import PolytopiaRenderer
+from polytopia.replay import GameRecorder
 
 
 @dataclass
@@ -19,6 +20,7 @@ class LiveWatchConfig:
     show_evaluations: bool = False
     window_width: int = 1280
     window_height: int = 800
+    record_path: str | None = None
 
 
 def _format_action(action: Action) -> str:
@@ -75,6 +77,10 @@ def run_game_live(
     n_actions = {0: 0, 1: 0}
     actions_this_turn = {0: 0, 1: 0}
 
+    recorder = GameRecorder() if config.record_path else None
+    if recorder is not None:
+        recorder.record_frame(state, None)
+
     while not state.game_over and not quit_requested:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -116,6 +122,9 @@ def run_game_live(
                 if action.action_type == ActionType.END_TURN:
                     actions_this_turn[player] = 0
 
+                if recorder is not None:
+                    recorder.record_frame(state, action)
+
                 last_action_text = f"P{player}: {_format_action(action)}"
                 last_action_time = now
 
@@ -151,6 +160,9 @@ def run_game_live(
         )
         renderer.clock.tick(30)
 
+    if recorder is not None and config.record_path:
+        recorder.save(config.record_path)
+
     renderer.close()
 
     return {
@@ -178,6 +190,12 @@ def main() -> None:
         default="random",
         help="qué bot juega como P0 (P1 siempre es random)",
     )
+    parser.add_argument(
+        "--record",
+        type=str,
+        default=None,
+        help="path al .json donde guardar el replay",
+    )
     args = parser.parse_args()
 
     state = create_initial_state(seed=args.seed)
@@ -195,6 +213,7 @@ def main() -> None:
         delay=args.delay,
         viewer_player=args.viewer,
         paused_on_start=args.paused,
+        record_path=args.record,
     )
     result = run_game_live(bot0, bot1, state, config)
     print(f"Winner: P{result['winner']}, turn {result['final_turn']}")
