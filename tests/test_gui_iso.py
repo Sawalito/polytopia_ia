@@ -51,6 +51,14 @@ def test_renderer_creates_window():
 
 
 @pytest.mark.skipif(not pygame.display.get_init(), reason="No display")
+def test_live_runner_imports():
+    from polytopia.renderers.gui.live_runner import LiveWatchConfig, run_game_live
+
+    assert LiveWatchConfig().delay > 0
+    assert callable(run_game_live)
+
+
+@pytest.mark.skipif(not pygame.display.get_init(), reason="No display")
 def test_renderer_with_entities():
     """Smoke test: renderer corre completo (terreno + entidades + HUD) sin errores."""
     from polytopia.engine.state_init import create_initial_state

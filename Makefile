@@ -1,4 +1,4 @@
-.PHONY: install test demo watch watch-step watch-eval gui-demo lint format clean
+.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-paused lint format clean
 
 install:
 	pip install -e ".[dev]"
@@ -20,6 +20,15 @@ watch-eval:
 
 gui-demo:
 	python -m polytopia.renderers.gui.main_renderer
+
+gui-live:
+	python -m polytopia.renderers.gui.live_runner
+
+gui-live-heuristic:
+	python -m polytopia.renderers.gui.live_runner --bot heuristic --delay 0.4
+
+gui-paused:
+	python -m polytopia.renderers.gui.live_runner --paused
 
 lint:
 	ruff check src tests
