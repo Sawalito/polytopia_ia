@@ -1,4 +1,4 @@
-.PHONY: install test demo lint format clean
+.PHONY: install test demo watch watch-step watch-eval lint format clean
 
 install:
 	pip install -e ".[dev]"
@@ -8,6 +8,15 @@ test:
 
 demo:
 	python -m polytopia.game_loop
+
+watch:
+	python -m polytopia.game_loop --watch --delay 0.5
+
+watch-step:
+	python -m polytopia.game_loop --watch --step
+
+watch-eval:
+	python -m polytopia.game_loop --watch --eval --delay 0.3
 
 lint:
 	ruff check src tests
