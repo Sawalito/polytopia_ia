@@ -1,3 +1,4 @@
+from rich.align import Align
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -62,7 +63,6 @@ def _cell_text(state: GameState, pos: Position, viewer_player: int | None) -> Te
         char = "C" if city_here.owner == 0 else "c"
         style = PLAYER_COLOR[city_here.owner]
 
-    # Units only show on currently VISIBLE tiles (fog-of-war).
     if fog_state == FogState.VISIBLE:
         unit_here = state.unit_at(pos)
         if unit_here is not None:
@@ -90,13 +90,19 @@ def render_state(
     header.add_column()
     header.add_row(
         Text(f"Turn {state.turn}/{state.max_turns}", style="bold"),
-        Text(f"Current: P{state.current_player}",
-             style=PLAYER_COLOR[state.current_player]),
-        Text("(fog: P{})".format(viewer_player) if viewer_player is not None else "(debug)",
-             style="dim"),
+        Text(
+            f"Current: P{state.current_player}",
+            style=PLAYER_COLOR[state.current_player],
+        ),
+        Text(
+            "(fog: P{})".format(viewer_player) if viewer_player is not None else "(debug)",
+            style="dim",
+        ),
     )
     for pid in (0, 1):
-        units_count = sum(1 for u in state.units.values() if u.owner == pid and u.is_alive)
+        units_count = sum(
+            1 for u in state.units.values() if u.owner == pid and u.is_alive
+        )
         cities_count = sum(1 for c in state.cities.values() if c.owner == pid)
         line = Text()
         line.append(f"P{pid}: ", style=PLAYER_COLOR[pid])
@@ -105,9 +111,24 @@ def render_state(
         )
         header.add_row(line, Text(""), Text(""))
 
-    out.print(Panel(header, title="Polytopia AI", border_style="bright_black"))
+    out.print(
+        Panel(
+            Align.center(header),
+            title="Polytopia AI",
+            border_style="bright_black",
+            padding=(1, 2),
+        )
+    )
 
-    grid = Table(show_header=True, header_style="bold dim", box=None, padding=(0, 0))
+    out.print()
+
+    grid = Table(
+        show_header=True,
+        header_style="bold dim",
+        box=None,
+        padding=(0, 1),
+        pad_edge=False,
+    )
     grid.add_column(" ", justify="right")
     for x in range(size):
         grid.add_column(str(x % 10), justify="center")
@@ -116,7 +137,17 @@ def render_state(
         for x in range(size):
             row.append(_cell_text(state, Position(x, y), viewer_player))
         grid.add_row(*row)
-    out.print(grid)
+    out.print(Align.center(grid))
+
+    out.print()
+
+
+def render_separator(console: Console, label: str = "") -> None:
+    """Imprime una línea horizontal completa con label opcional centrado.
+
+    Útil para separar turnos o frames visualmente.
+    """
+    console.rule(label, style="dim")
 
 
 def render_action_menu(actions: list[Action], console: Console | None = None) -> None:

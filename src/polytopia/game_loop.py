@@ -9,7 +9,7 @@ from polytopia.engine.actions import legal_actions
 from polytopia.engine.rules import apply_action, check_game_over
 from polytopia.engine.state_init import create_initial_state
 from polytopia.interfaces import Action, ActionType, GameState
-from polytopia.renderers.terminal import render_state
+from polytopia.renderers.terminal import render_separator, render_state
 
 
 @dataclass
@@ -17,7 +17,7 @@ class WatchConfig:
     """Configuración del modo watch."""
 
     enabled: bool = False
-    delay: float = 0.5
+    delay: float = 0.8
     step_by_step: bool = False
     viewer_player: int | None = None
     show_action_log: bool = True
@@ -88,6 +88,7 @@ def _render_action_header(
             f"[{color}]Turn {turn}/{max_turns} - P{player} ({bot_name})[/{color}]: "
             f"[bold]{_format_action(action)}[/bold]",
             border_style=color,
+            padding=(1, 4),
         )
     )
 
@@ -109,8 +110,10 @@ def _render_action_log(
             else "[dim]Sin acciones aún[/dim]",
             title="[cyan]Últimas acciones P0[/cyan]",
             border_style="cyan",
+            padding=(0, 2),
         )
     )
+    console.print()
     console.print(
         Panel(
             "\n".join(f"[magenta]{i+1}.[/magenta] {a}" for i, a in enumerate(p1_recent))
@@ -118,6 +121,7 @@ def _render_action_log(
             else "[dim]Sin acciones aún[/dim]",
             title="[magenta]Últimas acciones P1[/magenta]",
             border_style="magenta",
+            padding=(0, 2),
         )
     )
 
@@ -132,7 +136,8 @@ def _render_evaluations(
     console.print("[bold]Top acciones evaluadas:[/bold]")
     for score, action in evaluations:
         marker = "[green]->[/green]" if action == chosen else "  "
-        console.print(f"  {marker} {score:>+8.2f}  {_format_action(action)}")
+        console.print(f"  {marker}  {score:>+8.2f}   {_format_action(action)}")
+    console.print()
 
 
 def run_game(
@@ -198,14 +203,20 @@ def run_game(
         if watch.enabled:
             if watch.clear_screen:
                 _clear_screen(console)
+            console.print()
+            render_separator(console, f"P{player} - Acción {n_actions[player]}")
+            console.print()
             _render_action_header(
                 console, player, bot.name, action, state.turn, state.max_turns
             )
             render_state(state, viewer_player=watch.viewer_player)
+            console.print()
             if watch.show_action_log:
                 _render_action_log(console, action_log_p0, action_log_p1)
             if evaluations is not None:
                 _render_evaluations(console, evaluations, action)
+            console.print()
+            console.print()
             if watch.step_by_step:
                 console.input("[dim]Enter para continuar...[/dim]")
             elif watch.delay > 0:
@@ -264,7 +275,7 @@ def main() -> None:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--watch", action="store_true", help="modo visualización")
-    parser.add_argument("--delay", type=float, default=0.5, help="segundos entre frames")
+    parser.add_argument("--delay", type=float, default=0.8, help="segundos entre frames")
     parser.add_argument("--step", action="store_true", help="avanza con Enter (override delay)")
     parser.add_argument(
         "--viewer", type=int, choices=[0, 1], default=None,

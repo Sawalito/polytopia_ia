@@ -1,7 +1,16 @@
+import io
+
+from rich.console import Console
+
 from polytopia.agents.random_bot import RandomBot
 from polytopia.engine.state_init import create_initial_state
 from polytopia.game_loop import WatchConfig, _format_action, run_game
 from polytopia.interfaces import Action, ActionType, Position, UnitType
+from polytopia.renderers.terminal import render_separator, render_state
+
+
+def _capture_console() -> Console:
+    return Console(file=io.StringIO(), width=160, record=True, force_terminal=False)
 
 
 def test_watch_disabled_runs_silently_like_before(capsys):
@@ -98,3 +107,32 @@ def test_format_action_train_level_up_end_turn():
     lvl = Action(action_type=ActionType.LEVEL_UP, city_id=5)
     assert _format_action(lvl) == "LEVEL_UP city=5"
     assert _format_action(Action(action_type=ActionType.END_TURN)) == "END_TURN"
+
+
+def test_render_separator_empty_and_labeled_does_not_crash():
+    console = _capture_console()
+    render_separator(console)
+    render_separator(console, "P0 - Acción 7")
+    output = console.export_text()
+    # The labeled call must have written the label somewhere.
+    assert "P0 - Acción 7" in output
+    # The empty call still produces a horizontal line (at least one dash).
+    assert "─" in output or "-" in output
+
+
+def test_render_state_uses_triple_width_cells():
+    state = create_initial_state(seed=42)
+    console = _capture_console()
+    render_state(state, viewer_player=None, console=console)
+    output = console.export_text()
+    # Triple-width cells produce at least two consecutive spaces between adjacent
+    # one-character cell contents (e.g. ' .  . ' or ' ~  ~ ' on a map row).
+    map_lines = [
+        line for line in output.splitlines()
+        if line.strip() and "~" in line and "─" not in line
+    ]
+    assert map_lines, "expected at least one map row with water tiles"
+    assert any("  " in line for line in map_lines), (
+        "expected ≥2 consecutive spaces between adjacent cells; "
+        f"sample: {map_lines[:2]!r}"
+    )
