@@ -1,5 +1,3 @@
-import pytest
-
 from polytopia.agents.heuristic_bot import HeuristicBot
 from polytopia.agents.random_bot import RandomBot
 from polytopia.engine.state_init import create_initial_state
@@ -36,10 +34,11 @@ def test_run_game_returns_expected_keys():
     assert isinstance(result["n_actions_p1"], int)
 
 
-def test_heuristic_bot_raises_not_implemented():
+def test_heuristic_bot_returns_legal_action():
     state = create_initial_state(seed=42)
     from polytopia.engine.actions import legal_actions
 
     bot = HeuristicBot(player_id=0)
-    with pytest.raises(NotImplementedError):
-        bot.select_action(state, legal_actions(state, 0))
+    actions = legal_actions(state, 0)
+    chosen = bot.select_action(state, actions)
+    assert chosen in actions

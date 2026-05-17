@@ -1,4 +1,4 @@
-.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-paused gui-record gui-replay lint format clean
+.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-paused gui-record gui-replay benchmark benchmark-full lint format clean
 
 install:
 	pip install -e ".[dev]"
@@ -37,6 +37,12 @@ gui-record:
 gui-replay:
 	@if [ -z "$(FILE)" ]; then echo "Usa: make gui-replay FILE=replays/partida.json"; exit 1; fi
 	python -m polytopia.renderers.gui.replay_player $(FILE) --delay 0.5
+
+benchmark:
+	python -m experiments.benchmark
+
+benchmark-full:
+	python -m experiments.benchmark --n 50
 
 lint:
 	ruff check src tests
