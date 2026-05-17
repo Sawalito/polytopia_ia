@@ -82,30 +82,44 @@ def end_turn_tick(state: GameState, player: int) -> GameState:
     return state
 
 
-def _score(state: GameState, player: int) -> int:
-    city_score = sum(c.level * 10 for c in state.cities.values() if c.owner == player)
-    unit_count = sum(1 for u in state.units.values() if u.owner == player and u.is_alive)
-    return city_score + unit_count + state.stars[player]
-
-
 def check_game_over(state: GameState) -> tuple[bool, int | None]:
-    cities_0 = [c for c in state.cities.values() if c.owner == 0]
-    cities_1 = [c for c in state.cities.values() if c.owner == 1]
-    if not cities_0 and not cities_1:
-        return (True, None)
-    if not cities_0:
-        return (True, 1)
-    if not cities_1:
-        return (True, 0)
+    """Condiciones de victoria de Polytopia (revisadas para premiar agresion):
+
+    1. Eliminacion: si un player no tiene cities NI units, el otro gana inmediatamente.
+    2. Domination: si un player controla TODAS las cities, gana inmediatamente.
+    3. Score (solo tiebreaker en max_turns):
+       score = cities * 50 + units * 3 + stars * 0.1
+
+    Cambios vs version anterior:
+    - Cities ahora valen 50 (no 10): incentiva fuertemente capturar.
+    - Stars valen 0.1 (no 1.0): elimina ventaja de hoardear.
+    - Victoria por dominacion termina antes (no espera max_turns).
+    """
+    p0_cities = sum(1 for c in state.cities.values() if c.owner == 0)
+    p1_cities = sum(1 for c in state.cities.values() if c.owner == 1)
+    p0_units_alive = sum(1 for u in state.units.values() if u.owner == 0 and u.is_alive)
+    p1_units_alive = sum(1 for u in state.units.values() if u.owner == 1 and u.is_alive)
+
+    if p0_cities == 0 and p0_units_alive == 0:
+        return True, 1
+    if p1_cities == 0 and p1_units_alive == 0:
+        return True, 0
+
+    if p0_cities == 0:
+        return True, 1
+    if p1_cities == 0:
+        return True, 0
+
     if state.turn >= state.max_turns:
-        s0 = _score(state, 0)
-        s1 = _score(state, 1)
-        if s0 > s1:
-            return (True, 0)
-        if s1 > s0:
-            return (True, 1)
-        return (True, None)
-    return (False, None)
+        score_0 = p0_cities * 50 + p0_units_alive * 3 + state.stars[0] * 0.1
+        score_1 = p1_cities * 50 + p1_units_alive * 3 + state.stars[1] * 0.1
+        if score_0 > score_1:
+            return True, 0
+        if score_1 > score_0:
+            return True, 1
+        return True, None
+
+    return False, None
 
 
 def apply_action(state: GameState, action: Action) -> GameState:
