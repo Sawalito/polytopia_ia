@@ -1,0 +1,285 @@
+{
+  "bots": [
+    "Random",
+    "Aggressive",
+    "Defensive",
+    "Economic",
+    "GreedyAttack",
+    "HeuristicV3"
+  ],
+  "n_seeds": 10,
+  "matrix": {
+    "Random": {
+      "Random": 0.5,
+      "Aggressive": 0.4,
+      "Defensive": 0.3,
+      "Economic": 0.3,
+      "GreedyAttack": 0.4,
+      "HeuristicV3": 0.3
+    },
+    "Aggressive": {
+      "Random": 0.6,
+      "Aggressive": 0.5,
+      "Defensive": 0.4,
+      "Economic": 0.4,
+      "GreedyAttack": 0.5,
+      "HeuristicV3": 0.3
+    },
+    "Defensive": {
+      "Random": 0.7,
+      "Aggressive": 0.6,
+      "Defensive": 0.5,
+      "Economic": 0.3,
+      "GreedyAttack": 0.8,
+      "HeuristicV3": 0.3
+    },
+    "Economic": {
+      "Random": 0.7,
+      "Aggressive": 0.6,
+      "Defensive": 0.6,
+      "Economic": 0.5,
+      "GreedyAttack": 0.9,
+      "HeuristicV3": 0.4
+    },
+    "GreedyAttack": {
+      "Random": 0.6,
+      "Aggressive": 0.3,
+      "Defensive": 0.19999999999999996,
+      "Economic": 0.09999999999999998,
+      "GreedyAttack": 0.5,
+      "HeuristicV3": 0.3
+    },
+    "HeuristicV3": {
+      "Random": 0.7,
+      "Aggressive": 0.7,
+      "Defensive": 0.7,
+      "Economic": 0.6,
+      "GreedyAttack": 0.7,
+      "HeuristicV3": 0.5
+    }
+  },
+  "matchups": [
+    {
+      "bot_a": "Random",
+      "bot_b": "Aggressive",
+      "n_seeds": 10,
+      "wins_a": 4,
+      "wins_b": 6,
+      "draws": 0,
+      "win_rate_a": 0.4,
+      "ci_low": 0.1,
+      "ci_high": 0.7,
+      "avg_turns": 21.4,
+      "avg_time_per_game": 0.4529721736907959
+    },
+    {
+      "bot_a": "Random",
+      "bot_b": "Defensive",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 7,
+      "draws": 0,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 0.9705115556716919
+    },
+    {
+      "bot_a": "Random",
+      "bot_b": "Economic",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 7,
+      "draws": 0,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 27.0,
+      "avg_time_per_game": 1.2652907848358155
+    },
+    {
+      "bot_a": "Random",
+      "bot_b": "GreedyAttack",
+      "n_seeds": 10,
+      "wins_a": 4,
+      "wins_b": 6,
+      "draws": 0,
+      "win_rate_a": 0.4,
+      "ci_low": 0.1,
+      "ci_high": 0.7,
+      "avg_turns": 21.4,
+      "avg_time_per_game": 0.38209102153778074
+    },
+    {
+      "bot_a": "Random",
+      "bot_b": "HeuristicV3",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 7,
+      "draws": 0,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 16.864297246932985
+    },
+    {
+      "bot_a": "Aggressive",
+      "bot_b": "Defensive",
+      "n_seeds": 10,
+      "wins_a": 4,
+      "wins_b": 6,
+      "draws": 0,
+      "win_rate_a": 0.4,
+      "ci_low": 0.1,
+      "ci_high": 0.7,
+      "avg_turns": 28.1,
+      "avg_time_per_game": 0.9116601467132568
+    },
+    {
+      "bot_a": "Aggressive",
+      "bot_b": "Economic",
+      "n_seeds": 10,
+      "wins_a": 4,
+      "wins_b": 6,
+      "draws": 0,
+      "win_rate_a": 0.4,
+      "ci_low": 0.1,
+      "ci_high": 0.7,
+      "avg_turns": 26.9,
+      "avg_time_per_game": 1.1811326265335083
+    },
+    {
+      "bot_a": "Aggressive",
+      "bot_b": "GreedyAttack",
+      "n_seeds": 10,
+      "wins_a": 5,
+      "wins_b": 3,
+      "draws": 2,
+      "win_rate_a": 0.5,
+      "ci_low": 0.2,
+      "ci_high": 0.8,
+      "avg_turns": 26.8,
+      "avg_time_per_game": 0.6435139894485473
+    },
+    {
+      "bot_a": "Aggressive",
+      "bot_b": "HeuristicV3",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 7,
+      "draws": 0,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 11.499216437339783
+    },
+    {
+      "bot_a": "Defensive",
+      "bot_b": "Economic",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 6,
+      "draws": 1,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 2.129191517829895
+    },
+    {
+      "bot_a": "Defensive",
+      "bot_b": "GreedyAttack",
+      "n_seeds": 10,
+      "wins_a": 8,
+      "wins_b": 2,
+      "draws": 0,
+      "win_rate_a": 0.8,
+      "ci_low": 0.5,
+      "ci_high": 1.0,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 1.0791642665863037
+    },
+    {
+      "bot_a": "Defensive",
+      "bot_b": "HeuristicV3",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 7,
+      "draws": 0,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 16.845624613761903
+    },
+    {
+      "bot_a": "Economic",
+      "bot_b": "GreedyAttack",
+      "n_seeds": 10,
+      "wins_a": 9,
+      "wins_b": 1,
+      "draws": 0,
+      "win_rate_a": 0.9,
+      "ci_low": 0.7,
+      "ci_high": 1.0,
+      "avg_turns": 29.4,
+      "avg_time_per_game": 1.7297000646591187
+    },
+    {
+      "bot_a": "Economic",
+      "bot_b": "HeuristicV3",
+      "n_seeds": 10,
+      "wins_a": 4,
+      "wins_b": 6,
+      "draws": 0,
+      "win_rate_a": 0.4,
+      "ci_low": 0.1,
+      "ci_high": 0.7,
+      "avg_turns": 29.5,
+      "avg_time_per_game": 14.17030987739563
+    },
+    {
+      "bot_a": "GreedyAttack",
+      "bot_b": "HeuristicV3",
+      "n_seeds": 10,
+      "wins_a": 3,
+      "wins_b": 7,
+      "draws": 0,
+      "win_rate_a": 0.3,
+      "ci_low": 0.0,
+      "ci_high": 0.6,
+      "avg_turns": 30.0,
+      "avg_time_per_game": 10.422982954978943
+    }
+  ],
+  "ranking": [
+    [
+      "HeuristicV3",
+      0.6799999999999999
+    ],
+    [
+      "Economic",
+      0.64
+    ],
+    [
+      "Defensive",
+      0.54
+    ],
+    [
+      "Aggressive",
+      0.44000000000000006
+    ],
+    [
+      "Random",
+      0.33999999999999997
+    ],
+    [
+      "GreedyAttack",
+      0.3
+    ]
+  ],
+  "total_time": 805.6312575340271
+}

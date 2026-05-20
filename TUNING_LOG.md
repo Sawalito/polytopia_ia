@@ -1,5 +1,95 @@
 # Log de Iteraciones del HeuristicBot
 
+## Correcciones del motor (rama correcciones-motor, 2026-05-18 / 2026-05-19)
+
+### Pre-correcciones motor (baseline)
+- Win rate HeuristicBot v3 (vs RandomBot, n=30): **90.0%** (27/30)
+- CI 95% (bootstrap): [76.7%, 100.0%]
+- Tiempo promedio por partida: 30.0 turnos
+
+### PASO 1.1 - Limpieza de check_game_over
+Eliminadas condiciones redundantes (verificacion combinada cities==0 AND units==0
+ya quedaba cubierta por la verificacion sola de cities==0).
+
+- Win rate post-1.1 (n=30): **90.0%** (27/30) — IDENTICO al baseline
+- Tests: 89 passed, 3 skipped
+
+### PASO 1.2 - CAPTURE iteration con early-exit
+Cambiado bucle linear sobre `state.cities.values()` por `next(...)` con
+short-circuit. Pure refactor — sin cambio funcional.
+
+- Win rate post-1.2: no re-medido (refactor sin cambio funcional)
+
+### PASO 2 - Unificacion de calculate_score
+
+**Iteracion 1 (FALLO):** se aplico la formula literal del reporte de auditoria
+`cities*100 + units + stars//10`.
+
+- Win rate post-2 (formula reporte, n=30): **26.7%** (8/30)
+- CI 95%: [10.0%, 43.3%]
+- **REGRESION CRITICA: -63.3 pp vs baseline**
+
+Causa diagnosticada: la formula del reporte cambia el peso relativo de units
+de *3 a *1 vs cities (que pasan de *50 a *100). En desempates por max_turns,
+units pesan mucho menos, y como el bot ya casi no captura cities, perdia los
+empates que antes ganaba.
+
+**Iteracion 2 (FIX):** restaurada la formula del reward fix v3 original
+`cities*50 + units*3 + stars*0.1` (ahora unificada en una sola funcion).
+
+- Win rate post-fix (n=30): **90.0%** (27/30)
+- CI 95%: [76.7%, 100.0%]
+- Turnos promedio: 30.0
+- Delta vs baseline: **0.0 pp** (restaurado al 100%)
+
+**Cambio aceptado vs rechazado:**
+- Aceptado: unificacion en una funcion `calculate_score` usada por
+  `check_game_over` (desempate) y `game_loop.run_game` (final_score).
+- Rechazado: cambio de formula del reward fix v3.
+
+### Benchmark DQN bajo la formula corregida
+
+DQN crudo (~20 episodios de entrenamiento, epsilon ~0.98 — casi random):
+
+| Oponente      | Win rate DQN |
+|---------------|-------------:|
+| Random        |        90.0% |
+| Aggressive    |        90.0% |
+| Defensive     |        50.0% |
+| Economic      |        50.0% |
+| GreedyAttack  |        90.0% |
+| HeuristicV3   |        10.0% |
+| **Promedio**  |    **63.3%** |
+
+Observaciones:
+- vs HeuristicV3 esta en 10% — el bot heuristico le gana facil al DQN sin
+  entrenar. Esperado.
+- vs Defensive/Economic 50% sugiere que esos bots tampoco son agresivos y
+  el resultado se decide por desempate de score.
+- vs Aggressive/GreedyAttack 90% sugiere que esos bots se suicidan
+  atacando con desventaja; cualquier bot que sobreviva gana por score.
+- Para evaluar el DQN entrenado de verdad, hace falta correr la sesion
+  nocturna larga (~1200 episodios en CPU). Re-medir luego.
+
+### Tabla de evolucion de win rate vs RandomBot (n=30)
+
+| Cambio aplicado                          | Win rate | Delta  |
+|------------------------------------------|---------:|-------:|
+| Baseline (pre-correcciones)              |   90.0%  |    -   |
+| + PASO 1.1 (limpieza game_over)          |   90.0%  |    0   |
+| + PASO 1.2 (CAPTURE early-exit)          |    n/a   |    -   |
+| + PASO 2 con formula reporte (RECHAZADO) |   26.7%  |  -63.3 |
+| + PASO 2 con reward fix v3 (FINAL)       |   90.0%  |    0   |
+
+### Pasos NO aplicados (alto riesgo, requieren confirmacion)
+
+- PASO 1.3 (shallow copy en apply_action): no aplicado.
+- PASO 3 (CAPTURE requiere fresh): no aplicado.
+- PASO 4 (TRAIN solo en city.position): no aplicado.
+
+
+
+
 ## v4 - Lookahead 2-ply
 
 Motivacion: tuning de pesos llego a retornos decrecientes (v2: 45%, v3: 50%).
