@@ -66,22 +66,39 @@ git clone <url-del-repo>
 cd polytopia_ai
 python -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev,gui]"
+make install          # equivale a: pip install -e ".[dev,rl]"
 make test
 make demo
 ```
 
-El comando `make demo` corre una partida silenciosa de `RandomBot` vs
-`RandomBot` y debe terminar imprimiendo `Winner: PX, turn N` sin errores. Con
-el seed por defecto (`42`) la línea es:
+`make install` baja **todas** las dependencias necesarias para correr
+cualquier comando del proyecto (motor, tests, lint, GUI pygame, torneo,
+matplotlib para plots, y PyTorch para el DQN). Si después de instalar
+querés verificar:
+
+```bash
+make test                       # corre toda la suite de tests
+make demo                       # partida silenciosa Random vs Random
+make benchmark-dqn              # confirma que torch + checkpoint cargan
+```
+
+Con el seed por defecto (`42`) la línea final de `make demo` es:
 
 ```
 Winner: P0, turn 30
 ```
 
-Si solo te interesa la línea de comandos sin gráficos, basta con
-`pip install -e ".[dev]"`; pygame y la GUI son opcionales y viven detrás del
-extra `[gui]`.
+### Instalaciones parciales (si no querés todo)
+
+| Caso de uso | Comando |
+|---|---|
+| Todo (recomendado) | `make install` o `pip install -e ".[dev,rl]"` |
+| Solo motor + tests, sin GUI ni DQN | `pip install -e ".[dev]"` (sin `rl`, pero `pygame` igual viene en `dev`) |
+| Solo motor, sin nada extra | `pip install -e .` |
+| Agregar solo PyTorch a una install existente | `pip install -e ".[rl]"` |
+
+Extras definidos en `pyproject.toml`: `[gui]` (pygame), `[rl]` (torch),
+`[dev]` (pytest, black, ruff, pygame, matplotlib).
 
 ## Comandos disponibles
 

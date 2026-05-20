@@ -1,7 +1,7 @@
 .PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-mirror-heuristic gui-dqn-vs-random gui-dqn-vs-heuristic gui-mirror-dqn gui-paused gui-record gui-replay benchmark benchmark-full tournament tournament-quick tournament-full tournament-plot train-dqn train-dqn-resume train-dqn-status train-dqn-night benchmark-dqn analyze-dqn lint format clean
 
 install:
-	pip install -e ".[dev]"
+	pip install -e ".[dev,rl]"
 
 test:
 	pytest
