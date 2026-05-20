@@ -8,6 +8,7 @@ partidas.
 ## Tabla de contenidos
 
 - [Resumen](#resumen)
+- [Documentación de algoritmos](#documentacion-de-algoritmos)
 - [Quick Start](#quick-start)
 - [Comandos disponibles](#comandos-disponibles)
 - [Estructura del proyecto](#estructura-del-proyecto)
@@ -58,6 +59,24 @@ grabar replays). Las partidas pueden grabarse a JSON y reproducirse después
 con controles de pausa, frame seek y velocidad ajustable, lo cual habilita
 mostrar partidas memorables sin depender de RNG y comparar agentes sobre el
 mismo seed sin tener que volver a jugarlas.
+
+## Documentación de algoritmos
+
+Las reglas del juego, las fórmulas matemáticas de cada bot y el funcionamiento
+del DQN (arquitectura, features, entrenamiento, hyperparámetros) están
+documentados en detalle en [`docs/ALGORITHMS.md`](docs/ALGORITHMS.md). Cubre:
+
+- Mapa, unidades, acciones legales y la fórmula de combate con sus constantes.
+- Los 7 bots scripted (Random, Heuristic v3, Lookahead, Aggressive, Defensive,
+  Economic, GreedyAttack), cada uno con sus fórmulas o reglas de prioridad.
+- El DQN: features estado-acción de 36 dimensiones, red 36→64→64→1,
+  política ε-greedy, ecuación de Bellman con `γ = 0.97`.
+- Pipeline de entrenamiento: reward terminal-only, replay buffer de 20 000,
+  target network sincronizado cada 25 episodios, opponent pool mixto,
+  checkpointing reanudable.
+
+Para los resultados empíricos de comparar los bots entre sí, ver
+[`reports/tournament_narrative.md`](reports/tournament_narrative.md).
 
 ## Quick Start
 
