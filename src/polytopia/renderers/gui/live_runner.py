@@ -177,14 +177,26 @@ def main() -> None:
     """CLI para correr una partida en modo live gráfico."""
     import argparse
 
+    from pathlib import Path
+
     from polytopia.agents.heuristic_bot import HeuristicBot
     from polytopia.agents.random_bot import RandomBot
 
-    bot_choices = ["random", "heuristic"]
+    bot_choices = ["random", "heuristic", "dqn"]
 
-    def build_bot(kind: str, player_id: int) -> BaseBot:
+    def build_bot(kind: str, player_id: int, dqn_ckpt: str) -> BaseBot:
         if kind == "heuristic":
             return HeuristicBot(player_id=player_id)
+        if kind == "dqn":
+            from polytopia.agents.dqn_bot import DQNBot
+
+            if not Path(dqn_ckpt).exists():
+                raise FileNotFoundError(
+                    f"Checkpoint DQN no encontrado: {dqn_ckpt}. "
+                    "Entrená primero con `make train-dqn` o pasá "
+                    "--dqn-checkpoint <path>."
+                )
+            return DQNBot.load(dqn_ckpt, player_id=player_id, seed=player_id + 1)
         return RandomBot(player_id=player_id, seed=player_id + 1)
 
     parser = argparse.ArgumentParser()
@@ -205,6 +217,12 @@ def main() -> None:
         help="bot que juega como P1",
     )
     parser.add_argument(
+        "--dqn-checkpoint",
+        type=str,
+        default="checkpoints/dqn_nocturno_model.pt",
+        help="path al modelo DQN .pt (usado si --p0 o --p1 = dqn)",
+    )
+    parser.add_argument(
         "--record",
         type=str,
         default=None,
@@ -214,8 +232,8 @@ def main() -> None:
 
     state = create_initial_state(seed=args.seed)
 
-    bot0 = build_bot(args.p0, player_id=0)
-    bot1 = build_bot(args.p1, player_id=1)
+    bot0 = build_bot(args.p0, player_id=0, dqn_ckpt=args.dqn_checkpoint)
+    bot1 = build_bot(args.p1, player_id=1, dqn_ckpt=args.dqn_checkpoint)
 
     config = LiveWatchConfig(
         delay=args.delay,

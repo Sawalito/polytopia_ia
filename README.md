@@ -120,14 +120,23 @@ make gui-demo                # render estático de un estado inicial
 make gui-live                # Random vs Random
 make gui-live-heuristic      # HeuristicV3 vs Random
 make gui-mirror-heuristic    # HeuristicV3 vs HeuristicV3 (mirror)
+make gui-dqn-vs-random       # DQN vs Random
+make gui-dqn-vs-heuristic    # DQN vs HeuristicV3
+make gui-mirror-dqn          # DQN vs DQN (mirror)
 make gui-paused              # arranca pausado (Random vs Random)
 make gui-record              # graba a replays/last_game.json
 make gui-replay FILE=replays/last_game.json
 
-# Flags manuales del live_runner (--p0 y --p1 aceptan random|heuristic)
+# Flags manuales del live_runner (--p0 y --p1 aceptan random|heuristic|dqn)
 python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 heuristic --seed 7
-python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 random --paused
-python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 heuristic --record replays/mirror.json
+python -m polytopia.renderers.gui.live_runner --p0 dqn --p1 heuristic --paused
+python -m polytopia.renderers.gui.live_runner --p0 dqn --p1 heuristic --viewer 0
+python -m polytopia.renderers.gui.live_runner --p0 dqn --p1 heuristic --record replays/dqn.json
+
+# DQN requiere checkpoint (default: checkpoints/dqn_nocturno_model.pt).
+# Si querés usar otro:
+python -m polytopia.renderers.gui.live_runner --p0 dqn --p1 random \
+       --dqn-checkpoint checkpoints/otro_modelo.pt
 ```
 
 ### Torneo round-robin (todos contra todos)
@@ -190,10 +199,10 @@ python -m polytopia.renderers.gui.replay_player replays/mi_partida.json --delay 
 | `make train-dqn*` | `checkpoints/dqn_nocturno.pkl` + `.pt` |
 | `make analyze-dqn` | reporte en stdout |
 
-> **Limitación de la GUI:** `live_runner` actualmente solo acepta `random` y
-> `heuristic` en `--p0`/`--p1`. Para visualizar los otros bots de estrategia
+> **Limitación de la GUI:** `live_runner` acepta `random`, `heuristic` y
+> `dqn` en `--p0`/`--p1`. Para visualizar los otros bots de estrategia
 > (`Aggressive`, `Defensive`, `Economic`, `GreedyAttack`) usá el torneo
-> (números) o extendé `bot_choices` en `live_runner.py`.
+> (estadística) o extendé `bot_choices` en `live_runner.py`.
 
 ## Estructura del proyecto
 
