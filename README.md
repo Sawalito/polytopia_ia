@@ -9,6 +9,7 @@ partidas.
 
 - [Resumen](#resumen)
 - [Quick Start](#quick-start)
+- [Comandos disponibles](#comandos-disponibles)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Mecanica de juego implementada](#mecanica-de-juego-implementada)
 - [Dos modos de visualizacion](#dos-modos-de-visualizacion)
@@ -81,6 +82,118 @@ Winner: P0, turn 30
 Si solo te interesa la línea de comandos sin gráficos, basta con
 `pip install -e ".[dev]"`; pygame y la GUI son opcionales y viven detrás del
 extra `[gui]`.
+
+## Comandos disponibles
+
+Referencia consolidada de todo lo que se puede ejecutar. Bots disponibles en
+torneo: `Random`, `Aggressive`, `Defensive`, `Economic`, `GreedyAttack`,
+`HeuristicV3`.
+
+### Setup, tests y formato
+
+```bash
+make install            # pip install -e ".[dev]"
+make test               # pytest
+make lint               # ruff + black --check
+make format             # black + ruff --fix
+make clean              # borra caches, build/, *.egg-info
+```
+
+### Partidas en terminal (sin pygame)
+
+```bash
+make demo               # partida silenciosa, solo imprime ganador
+make watch              # auto-avance, delay 0.5s
+make watch-step         # paso a paso, Enter para avanzar
+make watch-eval         # muestra top-3 evaluaciones por acción
+
+# Flags manuales del game_loop
+python -m polytopia.game_loop --watch --delay 1.0
+python -m polytopia.game_loop --watch --viewer 0       # niebla desde P0
+python -m polytopia.game_loop --watch --eval --step
+```
+
+### Partidas en GUI gráfica (pygame)
+
+```bash
+make gui-demo                # render estático de un estado inicial
+make gui-live                # Random vs Random
+make gui-live-heuristic      # HeuristicV3 vs Random
+make gui-mirror-heuristic    # HeuristicV3 vs HeuristicV3 (mirror)
+make gui-paused              # arranca pausado (Random vs Random)
+make gui-record              # graba a replays/last_game.json
+make gui-replay FILE=replays/last_game.json
+
+# Flags manuales del live_runner (--p0 y --p1 aceptan random|heuristic)
+python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 heuristic --seed 7
+python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 random --paused
+python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 heuristic --record replays/mirror.json
+```
+
+### Torneo round-robin (todos contra todos)
+
+```bash
+make tournament-quick       # 10 seeds por matchup (rápido)
+make tournament             # 20 seeds (default)
+make tournament-full        # 50 seeds (más confiable)
+make tournament-plot        # heatmap desde reports/tournament.json
+
+# Subset de bots (cualquier combinación)
+python -m experiments.tournament --seeds 20 --bots HeuristicV3 Aggressive Defensive
+python -m experiments.tournament --seeds 30 --bots HeuristicV3 GreedyAttack
+python -m experiments.tournament --seeds 50 --bots Aggressive Defensive Economic GreedyAttack
+python -m experiments.tournament --seeds 30 --bots HeuristicV3 HeuristicV3 \
+       --output reports/mirror_heuristic.json
+```
+
+### Benchmark heurístico vs Random (script viejo)
+
+```bash
+make benchmark              # 20 seeds, HeuristicV3 como P0
+make benchmark-full         # 50 seeds
+
+python -m experiments.benchmark --n 100              # 100 seeds
+python -m experiments.benchmark --n 50 --as 1        # HeuristicV3 como P1
+```
+
+### DQN — entrenamiento, evaluación y análisis
+
+```bash
+make train-dqn              # 2000 episodios desde cero
+make train-dqn-resume       # 2000 episodios, retoma desde checkpoint
+make train-dqn-status       # status del checkpoint actual
+make train-dqn-night        # 3000 ep con resume y límite de 480 min
+
+make benchmark-dqn          # DQN contra cada bot del pool
+make analyze-dqn            # reporte de análisis del DQN entrenado
+```
+
+### Replay
+
+```bash
+# Grabar desde la GUI
+python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 heuristic \
+       --record replays/mi_partida.json
+
+# Reproducir
+make gui-replay FILE=replays/mi_partida.json
+python -m polytopia.renderers.gui.replay_player replays/mi_partida.json --delay 0.5
+```
+
+### Outputs
+
+| Comando | Genera |
+|---|---|
+| `make tournament*` | `reports/tournament.json` |
+| `make tournament-plot` | `reports/tournament_heatmap.png` |
+| `make gui-record` | `replays/last_game.json` |
+| `make train-dqn*` | `checkpoints/dqn_nocturno.pkl` + `.pt` |
+| `make analyze-dqn` | reporte en stdout |
+
+> **Limitación de la GUI:** `live_runner` actualmente solo acepta `random` y
+> `heuristic` en `--p0`/`--p1`. Para visualizar los otros bots de estrategia
+> (`Aggressive`, `Defensive`, `Economic`, `GreedyAttack`) usá el torneo
+> (números) o extendé `bot_choices` en `live_runner.py`.
 
 ## Estructura del proyecto
 

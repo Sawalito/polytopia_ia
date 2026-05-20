@@ -1,4 +1,4 @@
-.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-paused gui-record gui-replay benchmark benchmark-full tournament tournament-quick tournament-full tournament-plot train-dqn train-dqn-resume train-dqn-status train-dqn-night benchmark-dqn analyze-dqn lint format clean
+.PHONY: install test demo watch watch-step watch-eval gui-demo gui-live gui-live-heuristic gui-mirror-heuristic gui-paused gui-record gui-replay benchmark benchmark-full tournament tournament-quick tournament-full tournament-plot train-dqn train-dqn-resume train-dqn-status train-dqn-night benchmark-dqn analyze-dqn lint format clean
 
 install:
 	pip install -e ".[dev]"
@@ -25,7 +25,10 @@ gui-live:
 	python -m polytopia.renderers.gui.live_runner
 
 gui-live-heuristic:
-	python -m polytopia.renderers.gui.live_runner --bot heuristic --delay 0.4
+	python -m polytopia.renderers.gui.live_runner --p0 heuristic --delay 0.4
+
+gui-mirror-heuristic:
+	python -m polytopia.renderers.gui.live_runner --p0 heuristic --p1 heuristic --delay 0.4
 
 gui-paused:
 	python -m polytopia.renderers.gui.live_runner --paused

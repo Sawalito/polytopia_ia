@@ -177,7 +177,15 @@ def main() -> None:
     """CLI para correr una partida en modo live gráfico."""
     import argparse
 
+    from polytopia.agents.heuristic_bot import HeuristicBot
     from polytopia.agents.random_bot import RandomBot
+
+    bot_choices = ["random", "heuristic"]
+
+    def build_bot(kind: str, player_id: int) -> BaseBot:
+        if kind == "heuristic":
+            return HeuristicBot(player_id=player_id)
+        return RandomBot(player_id=player_id, seed=player_id + 1)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--delay", type=float, default=0.6)
@@ -185,10 +193,16 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--paused", action="store_true", help="arrancar pausado")
     parser.add_argument(
-        "--bot",
-        choices=["random", "heuristic"],
+        "--p0",
+        choices=bot_choices,
         default="random",
-        help="qué bot juega como P0 (P1 siempre es random)",
+        help="bot que juega como P0",
+    )
+    parser.add_argument(
+        "--p1",
+        choices=bot_choices,
+        default="random",
+        help="bot que juega como P1",
     )
     parser.add_argument(
         "--record",
@@ -200,14 +214,8 @@ def main() -> None:
 
     state = create_initial_state(seed=args.seed)
 
-    if args.bot == "heuristic":
-        from polytopia.agents.heuristic_bot import HeuristicBot
-
-        bot0 = HeuristicBot(player_id=0)
-    else:
-        bot0 = RandomBot(player_id=0, seed=1)
-
-    bot1 = RandomBot(player_id=1, seed=2)
+    bot0 = build_bot(args.p0, player_id=0)
+    bot1 = build_bot(args.p1, player_id=1)
 
     config = LiveWatchConfig(
         delay=args.delay,
