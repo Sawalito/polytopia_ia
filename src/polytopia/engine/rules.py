@@ -82,28 +82,37 @@ def end_turn_tick(state: GameState, player: int) -> GameState:
     return state
 
 
+def calculate_score(state: GameState, player: int) -> float:
+    """Score unificado del player. Usado en:
+    - check_game_over (desempate por timeout)
+    - game_loop.run_game (reporte final)
+    - cualquier evaluacion externa
+
+    Formula: cities * 50 + units_vivas * 3 + stars * 0.1
+
+    Esta es la formula del reward fix v3, calibrada en Fase 0 para que la
+    agresion gane sobre la pasividad. Cambiarla puede regresarnos al techo
+    del 50% de win rate (verificado: con cities*100 + units + stars//10 el
+    win rate cayo a 26.7%). Documentar cualquier cambio en TUNING_LOG.md.
+    """
+    cities = sum(1 for c in state.cities.values() if c.owner == player)
+    units_alive = sum(
+        1 for u in state.units.values()
+        if u.owner == player and u.is_alive
+    )
+    return cities * 50 + units_alive * 3 + state.stars[player] * 0.1
+
+
 def check_game_over(state: GameState) -> tuple[bool, int | None]:
-    """Condiciones de victoria de Polytopia (revisadas para premiar agresion):
+    """Condiciones de victoria de Polytopia.
 
-    1. Eliminacion: si un player no tiene cities NI units, el otro gana inmediatamente.
-    2. Domination: si un player controla TODAS las cities, gana inmediatamente.
-    3. Score (solo tiebreaker en max_turns):
-       score = cities * 50 + units * 3 + stars * 0.1
-
-    Cambios vs version anterior:
-    - Cities ahora valen 50 (no 10): incentiva fuertemente capturar.
-    - Stars valen 0.1 (no 1.0): elimina ventaja de hoardear.
-    - Victoria por dominacion termina antes (no espera max_turns).
+    1. Domination: si un player controla TODAS las cities, gana.
+       (Si tambien perdio todas sus units, esta condicion lo cubre porque
+       quedarse sin cities ya hace ganar al otro.)
+    2. Score (solo tiebreaker en max_turns): ver calculate_score.
     """
     p0_cities = sum(1 for c in state.cities.values() if c.owner == 0)
     p1_cities = sum(1 for c in state.cities.values() if c.owner == 1)
-    p0_units_alive = sum(1 for u in state.units.values() if u.owner == 0 and u.is_alive)
-    p1_units_alive = sum(1 for u in state.units.values() if u.owner == 1 and u.is_alive)
-
-    if p0_cities == 0 and p0_units_alive == 0:
-        return True, 1
-    if p1_cities == 0 and p1_units_alive == 0:
-        return True, 0
 
     if p0_cities == 0:
         return True, 1
@@ -111,8 +120,8 @@ def check_game_over(state: GameState) -> tuple[bool, int | None]:
         return True, 0
 
     if state.turn >= state.max_turns:
-        score_0 = p0_cities * 50 + p0_units_alive * 3 + state.stars[0] * 0.1
-        score_1 = p1_cities * 50 + p1_units_alive * 3 + state.stars[1] * 0.1
+        score_0 = calculate_score(state, 0)
+        score_1 = calculate_score(state, 1)
         if score_0 > score_1:
             return True, 0
         if score_1 > score_0:

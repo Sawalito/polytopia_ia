@@ -117,9 +117,14 @@ def legal_actions(state: GameState, player: int) -> list[Action]:
 
         # CAPTURE: on enemy city, no enemy stack on the city, no attack consumed.
         if not unit.has_attacked:
-            for city in state.cities.values():
-                if city.owner == player or city.position != unit.position:
-                    continue
+            city = next(
+                (
+                    c for c in state.cities.values()
+                    if c.position == unit.position and c.owner != player
+                ),
+                None,
+            )
+            if city is not None:
                 enemy_on_city = any(
                     u.position == city.position and u.owner != player and u.is_alive
                     for u in state.units.values()

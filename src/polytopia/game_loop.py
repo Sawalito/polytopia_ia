@@ -6,7 +6,7 @@ from rich.panel import Panel
 
 from polytopia.agents.base import BaseBot
 from polytopia.engine.actions import legal_actions
-from polytopia.engine.rules import apply_action, check_game_over
+from polytopia.engine.rules import apply_action, calculate_score, check_game_over
 from polytopia.engine.state_init import create_initial_state
 from polytopia.interfaces import Action, ActionType, GameState
 from polytopia.renderers.terminal import render_separator, render_state
@@ -223,14 +223,7 @@ def run_game(
                 time.sleep(watch.delay)
 
     _, winner = check_game_over(state)
-    final_score = {
-        p: (
-            sum(c.level * 10 for c in state.cities.values() if c.owner == p)
-            + len([u for u in state.units.values() if u.owner == p and u.is_alive])
-            + state.stars[p]
-        )
-        for p in (0, 1)
-    }
+    final_score = {p: calculate_score(state, p) for p in (0, 1)}
 
     if watch.enabled:
         if watch.clear_screen:
