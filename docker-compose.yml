@@ -1,0 +1,25 @@
+services:
+  test:
+    build: .
+    command: pytest --tb=short -q
+    volumes:
+      - ./reports:/app/reports
+
+  demo:
+    build: .
+    command: python -m polytopia.cli demo
+    volumes:
+      - ./reports:/app/reports
+
+  plots:
+    build: .
+    command: python -m experiments.plots
+    volumes:
+      - ./reports:/app/reports
+      - ./experiments:/app/experiments
+
+  tournament:
+    build: .
+    command: python -m polytopia.cli tournament --seeds 10
+    volumes:
+      - ./reports:/app/reports

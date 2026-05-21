@@ -1,0 +1,13 @@
+iavenv/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+.vscode/
+.DS_Store
+.git/
+reports/*.png
+reports/*.json
+.env

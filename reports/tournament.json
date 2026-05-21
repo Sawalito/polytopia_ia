@@ -70,7 +70,7 @@
       "ci_low": 0.1,
       "ci_high": 0.7,
       "avg_turns": 21.4,
-      "avg_time_per_game": 0.4529721736907959
+      "avg_time_per_game": 0.19231886863708497
     },
     {
       "bot_a": "Random",
@@ -83,7 +83,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 30.0,
-      "avg_time_per_game": 0.9705115556716919
+      "avg_time_per_game": 0.49707951545715334
     },
     {
       "bot_a": "Random",
@@ -96,7 +96,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 27.0,
-      "avg_time_per_game": 1.2652907848358155
+      "avg_time_per_game": 0.6486721992492676
     },
     {
       "bot_a": "Random",
@@ -109,7 +109,7 @@
       "ci_low": 0.1,
       "ci_high": 0.7,
       "avg_turns": 21.4,
-      "avg_time_per_game": 0.38209102153778074
+      "avg_time_per_game": 0.1973649263381958
     },
     {
       "bot_a": "Random",
@@ -122,7 +122,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 30.0,
-      "avg_time_per_game": 16.864297246932985
+      "avg_time_per_game": 8.583120250701905
     },
     {
       "bot_a": "Aggressive",
@@ -135,7 +135,7 @@
       "ci_low": 0.1,
       "ci_high": 0.7,
       "avg_turns": 28.1,
-      "avg_time_per_game": 0.9116601467132568
+      "avg_time_per_game": 0.46460552215576173
     },
     {
       "bot_a": "Aggressive",
@@ -148,7 +148,7 @@
       "ci_low": 0.1,
       "ci_high": 0.7,
       "avg_turns": 26.9,
-      "avg_time_per_game": 1.1811326265335083
+      "avg_time_per_game": 0.570872712135315
     },
     {
       "bot_a": "Aggressive",
@@ -161,7 +161,7 @@
       "ci_low": 0.2,
       "ci_high": 0.8,
       "avg_turns": 26.8,
-      "avg_time_per_game": 0.6435139894485473
+      "avg_time_per_game": 0.3162583351135254
     },
     {
       "bot_a": "Aggressive",
@@ -174,7 +174,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 30.0,
-      "avg_time_per_game": 11.499216437339783
+      "avg_time_per_game": 5.565662455558777
     },
     {
       "bot_a": "Defensive",
@@ -187,7 +187,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 30.0,
-      "avg_time_per_game": 2.129191517829895
+      "avg_time_per_game": 1.052913236618042
     },
     {
       "bot_a": "Defensive",
@@ -200,7 +200,7 @@
       "ci_low": 0.5,
       "ci_high": 1.0,
       "avg_turns": 30.0,
-      "avg_time_per_game": 1.0791642665863037
+      "avg_time_per_game": 0.5299285888671875
     },
     {
       "bot_a": "Defensive",
@@ -213,7 +213,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 30.0,
-      "avg_time_per_game": 16.845624613761903
+      "avg_time_per_game": 8.092277574539185
     },
     {
       "bot_a": "Economic",
@@ -226,7 +226,7 @@
       "ci_low": 0.7,
       "ci_high": 1.0,
       "avg_turns": 29.4,
-      "avg_time_per_game": 1.7297000646591187
+      "avg_time_per_game": 0.8300808906555176
     },
     {
       "bot_a": "Economic",
@@ -239,7 +239,7 @@
       "ci_low": 0.1,
       "ci_high": 0.7,
       "avg_turns": 29.5,
-      "avg_time_per_game": 14.17030987739563
+      "avg_time_per_game": 7.168309354782105
     },
     {
       "bot_a": "GreedyAttack",
@@ -252,7 +252,7 @@
       "ci_low": 0.0,
       "ci_high": 0.6,
       "avg_turns": 30.0,
-      "avg_time_per_game": 10.422982954978943
+      "avg_time_per_game": 5.575913882255554
     }
   ],
   "ranking": [
@@ -281,5 +281,5 @@
       0.3
     ]
   ],
-  "total_time": 805.6312575340271
+  "total_time": 402.9349570274353
 }
